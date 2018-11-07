@@ -1,0 +1,168 @@
+/* Arduino USB Keyboard HID demo
+ *Modified code from http://mitchtech.net/arduino-usb-hid-keyboard/
+ *Tutorial from Blitz City DIY https://www.youtube.com/watch?v=wTbjmulNSlw
+ *Used the wayback machine internet archive to find needed information
+ *Modified and written by Tara Nicole Payne aka https://www.Twitch.tv/elocin_anagram 
+ */
+
+#define KEYPAD_ENTER 229
+#define KEYBOARD_RIGHTCONTROL 228
+
+
+uint8_t buf[8] = { 
+  0 };  /* Keyboard report buffer */
+
+#define PIN_MARKER 0
+#define PIN_Z 1
+#define PIN_C 2
+#define PIN_V 3
+#define PIN_NAMETAG 4
+#define PIN_SCRNSHOT 5
+#define PIN_ENTER 6
+#define PIN_SCENE1 7
+#define PIN_SCENE2 8
+#define PIN_SCENE3 9
+#define PIN_SCENE4 10
+
+int state = 1;
+
+void setup() 
+{
+  Serial.begin(9600);
+
+  pinMode(PIN_MARKER, INPUT);
+  pinMode(PIN_Z, INPUT);
+  pinMode(PIN_C, INPUT); 
+  pinMode(PIN_V, INPUT);
+  pinMode(PIN_NAMETAG, INPUT);
+  pinMode (PIN_SCRNSHOT, INPUT);
+  pinMode (PIN_ENTER, INPUT);
+  pinMode (PIN_SCENE1, INPUT);
+  pinMode (PIN_SCENE2, INPUT);
+  pinMode (PIN_SCENE3, INPUT);
+  pinMode (PIN_SCENE4, INPUT);
+
+  // Enable internal pull-ups
+  digitalWrite(PIN_MARKER, 1); 
+  digitalWrite(PIN_Z, 1);
+  digitalWrite(PIN_C, 1);
+  digitalWrite(PIN_V, 1);
+  digitalWrite(PIN_NAMETAG, 1);
+  digitalWrite(PIN_SCRNSHOT, 1);
+  digitalWrite(PIN_ENTER, 1);
+  digitalWrite(PIN_SCENE1, 1);
+  digitalWrite(PIN_SCENE2, 1);
+  digitalWrite(PIN_SCENE3, 1);
+  digitalWrite(PIN_SCENE4, 1);
+  
+  delay(200);
+}
+
+void loop() 
+{
+  state = digitalRead(PIN_MARKER);
+  if (state != 1) {
+    buf[0] = 84; // Forward slash   
+    buf[1] = 10; // M    
+    buf[2] = 4; // A
+    buf[3] = 21; // R
+    buf[4] = 14; // K
+    buf[5] = 8; // E
+    buf[6] = 21; // R
+    buf[7] = KEYPAD_ENTER;
+    Serial.write(buf, 8); // Ssend keypress
+    releaseKey();
+  }
+
+state = digitalRead(PIN_Z);
+  if (state != 1) {
+    buf[0] = 29;   // Z
+    Serial.write(buf, 8); // Ssend keypress
+    releaseKey();
+  }
+
+state = digitalRead(PIN_C);
+  if (state != 1) {
+    buf[0] = 6;   // C
+    Serial.write(buf, 8); // Ssend keypress
+    releaseKey();
+  }
+
+state = digitalRead(PIN_V);
+  if (state != 1) {
+    buf[0] = 19;   // V
+    Serial.write(buf, 8); // Ssend keypress
+    releaseKey();
+  }
+
+  state = digitalRead(PIN_NAMETAG);
+  if (state != 1) {
+    buf[0] = KEYBOARD_RIGHTCONTROL; // CTRL  
+    buf[1] = 17; // N    
+    Serial.write(buf, 8); // Ssend keypress
+    releaseKey();
+  }
+
+state = digitalRead(PIN_SCRNSHOT);
+  if (state != 1) {
+    buf[0] = 69;   // F12
+    Serial.write(buf, 8); // Ssend keypress
+    releaseKey();
+  }
+
+state = digitalRead(PIN_SCRNSHOT);
+  if (state != 1) {
+    buf[0] = KEYPAD_ENTER;   // ENTER
+    Serial.write(buf, 8); // Ssend keypress
+    releaseKey();
+  }
+
+state = digitalRead(PIN_SCENE1);
+  if (state != 1) {
+    buf[0] = KEYBOARD_RIGHTCONTROL; // CTRL  
+    buf[1] = 30; // 1   
+    Serial.write(buf, 8); // Ssend keypress
+    releaseKey();
+  }
+
+state = digitalRead(PIN_SCENE2);
+  if (state != 1) {
+    buf[0] = KEYBOARD_RIGHTCONTROL; // CTRL  
+    buf[1] = 31; // 2   
+    Serial.write(buf, 8); // Ssend keypress
+    releaseKey();
+  }
+
+state = digitalRead(PIN_SCENE3);
+  if (state != 1) {
+    buf[0] = KEYBOARD_RIGHTCONTROL; // CTRL  
+    buf[1] = 32; // 3   
+    Serial.write(buf, 8); // Ssend keypress
+    releaseKey();
+  }
+
+state = digitalRead(PIN_SCENE4);
+  if (state != 1) {
+    buf[0] = KEYBOARD_RIGHTCONTROL; // CTRL  
+    buf[1] = 33; // 4   
+    Serial.write(buf, 8); // Ssend keypress
+    releaseKey();
+  }
+
+  
+}
+  
+
+void releaseKey() 
+{
+  buf[0] = 0;
+  buf[1] = 0;
+  buf[2] = 0;
+  buf[3] = 0;
+  buf[4] = 0;
+  buf[5] = 0;
+  buf[6] = 0;
+  buf[7] = 0;
+  Serial.write(buf, 8); // Release key  
+  delay(500);
+}
